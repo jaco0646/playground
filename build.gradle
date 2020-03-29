@@ -1,0 +1,54 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.1.6.RELEASE")
+    }
+}
+
+plugins {
+    id 'groovy'
+    id 'java'
+    id 'org.springframework.boot' version '2.1.9.RELEASE'
+//    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'project-report'  // htmlDependencyReport
+}
+
+group 'com.playground'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 11
+targetCompatibility = 11
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    springVersion = '5.1.10.RELEASE'
+    springBootVersion = '2.1.9.RELEASE'
+}
+
+dependencies {
+    implementation 'org.codehaus.groovy:groovy-all:3.0.2'
+
+    implementation "org.springframework:spring-core:$springVersion"
+    implementation "org.springframework:spring-webmvc:$springVersion"
+    implementation "org.springframework.boot:spring-boot:$springBootVersion"
+    implementation "org.springframework.boot:spring-boot-autoconfigure:$springBootVersion"
+    implementation "org.springframework.boot:spring-boot-starter-tomcat:$springBootVersion"
+
+    testImplementation 'org.spockframework:spock-core:2.0-M2-groovy-3.0'
+}
+
+test {
+    useJUnitPlatform()
+    afterSuite { desc, result ->
+        if (!desc.parent) {
+            if (result.testCount == 0) {
+                throw new IllegalStateException("No tests were found. Failing the build.")
+            }
+        }
+    }
+}
