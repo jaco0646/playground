@@ -3,14 +3,13 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.1.6.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion")
     }
 }
 
 plugins {
     id 'groovy'
-    id 'java'
-    id 'org.springframework.boot' version '2.1.9.RELEASE'
+    id 'org.springframework.boot' version "$springBootVersion"
 //    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'project-report'  // htmlDependencyReport
 }
@@ -18,20 +17,24 @@ plugins {
 group 'com.playground'
 version '1.0-SNAPSHOT'
 
-sourceCompatibility = 11
-targetCompatibility = 11
+sourceCompatibility = 14
+targetCompatibility = 14
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs += '--enable-preview'
+}
+tasks.withType(Test) {
+    jvmArgs += '--enable-preview'
+}
 
 repositories {
     mavenCentral()
 }
 
-ext {
-    springVersion = '5.1.10.RELEASE'
-    springBootVersion = '2.1.9.RELEASE'
-}
-
 dependencies {
-    implementation 'org.codehaus.groovy:groovy-all:3.0.2'
+    implementation 'org.codehaus.groovy:groovy-all:3.0.3'
+    implementation 'org.projectlombok:lombok:1.18.12'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.3'
 
     implementation "org.springframework:spring-core:$springVersion"
     implementation "org.springframework:spring-webmvc:$springVersion"
