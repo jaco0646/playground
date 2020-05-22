@@ -1,5 +1,6 @@
 package collectors;
 
+import java.util.function.Consumer;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 import static java.util.stream.Collectors.*;
@@ -13,6 +14,7 @@ public class MyCollectors {
         count();
         filter();
         flatMap();
+        forEach();
         group();
     }
 
@@ -56,9 +58,22 @@ public class MyCollectors {
         line();
     }
 
+    static void forEach() {
+        fooBarBazQux().forEach( ((Consumer<String>) it -> System.out.print("forEach: "))
+                .andThen(System.out::print)
+                .andThen(it -> System.out.print(new StringBuilder(it).reverse()))
+                .andThen(it -> System.out.println(it.toUpperCase()))
+        );
+        line();
+    }
+
     static void group() {
         System.out.println("groupingBy: " + fooBarBazQux().collect(groupingBy(s -> s.charAt(0))));
         System.out.println("groupingBy: " + fooBarBazQux().collect(groupingBy(s -> s.charAt(0), joining(""))));
+        System.out.println("groupingBy: " +
+                Stream.of("one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten")
+                    .collect(groupingBy(String::length, groupingBy(it -> it.charAt(0))))
+        );
         line();
     }
 

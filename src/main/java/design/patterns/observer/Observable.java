@@ -25,7 +25,7 @@ class Observable {
                 .forEach(ob -> ob.o.notify(new ChangeEvent(newValue, type)));
     }
 
-    void register(Observer o, ChangeEventType ce) {
-        observations.add(new Observation(o, ce));
+    void register(Observer o, ChangeEventType type) {
+        observations.add(new Observation(o, type));
     }
 }

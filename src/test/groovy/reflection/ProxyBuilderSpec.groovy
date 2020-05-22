@@ -2,28 +2,27 @@ package reflection
 
 import spock.lang.Specification
 
-import java.util.function.Function
-
 class ProxyBuilderSpec extends Specification {
 
     def "testMapInterface"() {
         given:
-            def overrides = [ (Map.class.getMethod("clear")) : { System.out.println("Hello World") } as Function ]
-            ProxyBuilder<Map<String, String>> builder = new ProxyBuilder<>(new HashMap<>())
-            Map<String, String> proxy = builder.newProxy(builder.newHandler(overrides))
+            HashMap<String, String> delegate = new HashMap<>()
+            Map<String, String> proxyMap = new ProxyBuilder<>(delegate)
+                    .withOverride("clear", it -> System.out.println("Hello World"))
+                    .build()
         expect:
-            proxy.put("foo", "bar") == null
+            proxyMap.put("foo", "bar") == null
         when:
-            proxy.clear()
+            proxyMap.clear()
         then:
-            proxy.size() == 1
+            proxyMap.size() == 1
     }
 
     def "testMapAbstractClass"() {
         given:
-            ProxyBuilder<Map<String, String>> builder = new ProxyBuilder<>(new HashMap<>())
+            HashMap<String, String> delegate = new HashMap<>()
         when:
-            AbstractMap<String, String> proxy = builder.newProxy(builder.newHandler([:]))
+            AbstractMap<String, String> proxyMap = new ProxyBuilder<>(delegate).build()
         then:
             ClassCastException cce = thrown()
             cce.message.contains('com.sun.proxy.$Proxy')
