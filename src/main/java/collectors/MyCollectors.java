@@ -70,6 +70,7 @@ public class MyCollectors {
     static void group() {
         System.out.println("groupingBy: " + fooBarBazQux().collect(groupingBy(s -> s.charAt(0))));
         System.out.println("groupingBy: " + fooBarBazQux().collect(groupingBy(s -> s.charAt(0), joining(""))));
+        System.out.println("groupingBy: " + fooBarBazQux().collect(groupingBy(s -> s.charAt(0), reducing((x,y) -> x + "_" + y))));
         System.out.println("groupingBy: " +
                 Stream.of("one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten")
                     .collect(groupingBy(String::length, groupingBy(it -> it.charAt(0))))
