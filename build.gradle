@@ -32,9 +32,8 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.codehaus.groovy:groovy-all:3.0.3'
-    implementation 'org.projectlombok:lombok:1.18.12'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.3'
+    implementation 'org.codehaus.groovy:groovy-all:3.0.4'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.2'
     implementation 'org.apache.commons:commons-collections4:4.4'
 
     implementation "org.springframework:spring-core:$springVersion"
@@ -43,8 +42,11 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-autoconfigure:$springBootVersion"
     implementation "org.springframework.boot:spring-boot-starter-tomcat:$springBootVersion"
 
-    testImplementation 'org.spockframework:spock-core:2.0-M2-groovy-3.0'
-    testImplementation 'net.bytebuddy:byte-buddy:1.10.13'
+    compileOnly 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+
+    testImplementation 'org.spockframework:spock-core:2.0-M3-groovy-3.0'
+    testImplementation 'net.bytebuddy:byte-buddy:1.10.14'
 }
 
 test {

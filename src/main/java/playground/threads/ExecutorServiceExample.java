@@ -19,6 +19,8 @@ public class ExecutorServiceExample {
         System.out.println("Begin submit...");
         List<Future<String>> submittedFutures = callables.stream().map(executor::submit).collect(Collectors.toList());
         System.out.println("End submit.");
+
+        executor.shutdown();
     }
 
 }
