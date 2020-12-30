@@ -32,6 +32,9 @@ tasks.withType(JavaCompile) {
 tasks.withType(Test) {
     jvmArgs += '--enable-preview'
 }
+bootRun {
+    jvmArgs = ['--enable-preview']
+}
 
 repositories {
     mavenCentral()
@@ -41,12 +44,14 @@ dependencies {
     implementation 'org.codehaus.groovy:groovy-all:3.0.6'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.2'
     implementation 'org.apache.commons:commons-collections4:4.4'
+    implementation 'org.reflections:reflections:0.9.12'
 
     implementation "org.springframework:spring-core:$springVersion"
     implementation "org.springframework:spring-webmvc:$springVersion"
     implementation "org.springframework.boot:spring-boot:$springBootVersion"
     implementation "org.springframework.boot:spring-boot-autoconfigure:$springBootVersion"
     implementation "org.springframework.boot:spring-boot-starter-tomcat:$springBootVersion"
+    implementation "org.springframework.boot:spring-boot-devtools:$springBootVersion"
 
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'

@@ -1,10 +1,14 @@
 package spring;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.reflections.Reflections;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import spring.cache.CacheConfig;
+import spring.domain.Animal;
 
 @PropertySource({
     // Default properties cannot be overridden by @PropertySource files.
@@ -26,5 +30,12 @@ public class RootConfig {
     Service service() {
         return new Service();
     }
-}
 
+    @Bean
+    public CommandLineRunner registerAnimals(ObjectMapper mapper) {
+        return args -> {
+            Reflections reflections = new Reflections("spring.domain");
+            reflections.getSubTypesOf(Animal.class).forEach(mapper::registerSubtypes);
+        };
+    }
+}
