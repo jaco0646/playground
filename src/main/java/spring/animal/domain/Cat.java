@@ -1,4 +1,4 @@
-package spring.domain;
+package spring.animal.domain;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 

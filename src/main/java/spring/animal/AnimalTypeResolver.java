@@ -1,4 +1,4 @@
-package spring.domain;
+package spring.animal;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.TypeIdResolver;
 import org.springframework.stereotype.Component;
+import spring.animal.domain.Animal;
 
 import java.util.Map;
 import java.util.TreeSet;

@@ -1,19 +1,18 @@
 package spring;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import spring.domain.Animal;
 
 import javax.annotation.PostConstruct;
 
 @RestController
 public class HelloController {
 
-    @Autowired
-    private Service service;
+    private final Service service;
+
+    HelloController(Service service) {
+        this.service = service;
+    }
 
     @PostConstruct
     void testLookupMethod() {
@@ -33,11 +32,6 @@ public class HelloController {
     @RequestMapping("/foo")
     public String foo() throws InterruptedException {
         return service.foo();
-    }
-
-    @PostMapping("/animal")
-    public String postAnimal(@RequestBody Animal animal) {
-        return animal.speak();
     }
 
 }

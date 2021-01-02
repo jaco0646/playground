@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import spring.cache.CacheConfig;
-import spring.domain.Animal;
+import spring.animal.domain.Animal;
 
 @PropertySource({
     // Default properties cannot be overridden by @PropertySource files.
@@ -34,8 +34,8 @@ public class RootConfig {
     @Bean
     public CommandLineRunner registerAnimals(ObjectMapper mapper) {
         return args -> {
-            Reflections reflections = new Reflections("spring.domain");
-            reflections.getSubTypesOf(Animal.class).forEach(mapper::registerSubtypes);
+            Reflections reflection = new Reflections(Animal.class.getPackageName());
+            reflection.getSubTypesOf(Animal.class).forEach(mapper::registerSubtypes);
         };
     }
 }
