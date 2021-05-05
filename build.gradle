@@ -37,8 +37,8 @@ aspectj {
 group 'com.playground'
 version '1.0-SNAPSHOT'
 
-sourceCompatibility = 14
-targetCompatibility = 14
+sourceCompatibility = 16
+targetCompatibility = 16
 
 tasks.withType(JavaCompile) {
     options.compilerArgs += '--enable-preview'

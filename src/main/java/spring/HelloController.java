@@ -1,5 +1,7 @@
 package spring;
 
+import org.springframework.boot.devtools.restart.Restarter;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,4 +36,9 @@ public class HelloController {
         return service.foo();
     }
 
+    @PostMapping("/restart")
+    public void restart() {
+//        Application.restart();
+        Restarter.getInstance().restart();
+    }
 }

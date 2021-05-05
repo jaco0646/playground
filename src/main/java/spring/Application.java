@@ -1,9 +1,11 @@
 package spring;
 
+import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 import java.util.Arrays;
@@ -13,8 +15,10 @@ import static java.util.stream.Collectors.joining;
 
 @SpringBootApplication
 public class Application {
+    private static volatile ConfigurableApplicationContext context;
+
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        context = SpringApplication.run(Application.class, args);
     }
 
     @Bean
@@ -25,5 +29,19 @@ public class Application {
 //                    .sorted()
 //                    .collect(joining(", ")));
         };
+    }
+
+    /** {@see https://www.baeldung.com/java-restart-spring-boot-app}
+     * This does not play nice with spring-boot-devtools. */
+    public static void restart() {
+        ApplicationArguments args = context.getBean(ApplicationArguments.class);
+
+        Thread thread = new Thread(() -> {
+            context.close();
+            context = SpringApplication.run(Application.class, args.getSourceArgs());
+        });
+
+        thread.setDaemon(false);
+        thread.start();
     }
 }
