@@ -25,7 +25,6 @@ class ProxyBuilderSpec extends Specification {
             AbstractMap<String, String> proxyMap = new ProxyBuilder<>(delegate).build()
         then:
             ClassCastException cce = thrown()
-            cce.message.contains('com.sun.proxy.$Proxy')
-            cce.message.contains('java.util.AbstractMap')
+            cce.message =~ /Cannot cast object .+? with class .+?Proxy.+? to class 'java.util.AbstractMap'/
     }
 }
