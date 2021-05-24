@@ -16,6 +16,26 @@ plugins {
 //    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'project-report'  // htmlDependencyReport
     id 'com.gorylenko.gradle-git-properties' version '2.3.1'
+    id 'com.google.cloud.tools.jib' version '3.0.0'  // jibDockerBuild
+}
+
+group 'com.playground'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 16
+targetCompatibility = 16
+
+jib {
+    from.image = 'adoptopenjdk:16-jre'
+    to.image = "$group/$version".toLowerCase()
+    container.creationTime = 'USE_CURRENT_TIMESTAMP'
+    container.mainClass = 'spring.Application'
+    container.jvmFlags = ['--enable-preview']
+    container.ports = ['8080']
+}
+
+springBoot {
+    mainClass.set(jib.container.mainClass)
 }
 
 // For actuator/info
@@ -28,12 +48,6 @@ gitProperties {
     customProperty 'git.build.time', { DateTimeFormatter.ofPattern(dateFormat).format(LocalDateTime.now()) }
 }
 
-group 'com.playground'
-version '1.0-SNAPSHOT'
-
-sourceCompatibility = 16
-targetCompatibility = 16
-
 tasks.withType(JavaCompile) {
     options.compilerArgs += '--enable-preview'
 }
@@ -44,28 +58,27 @@ bootRun {
     jvmArgs = ['--enable-preview']
 }
 
-springBoot {
-    mainClass.set('spring.Application')
-}
-
 repositories {
     mavenCentral()
 }
 
 dependencies {
     implementation 'org.codehaus.groovy:groovy-all:3.0.8'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'org.apache.commons:commons-collections4:4.4'
     implementation 'org.reflections:reflections:0.9.12'
 
     implementation "org.springframework:spring-webmvc:$springVersion"
-    implementation "org.springframework.boot:spring-boot-starter-aop:$springBootVersion"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
     implementation "org.springframework.boot:spring-boot-starter-tomcat:$springBootVersion"
     implementation "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
     implementation "org.springframework.boot:spring-boot-devtools:$springBootVersion"
 
     compileOnly 'org.projectlombok:lombok:1.18.20'
     annotationProcessor 'org.projectlombok:lombok:1.18.20'
+
+    runtimeOnly 'org.postgresql:postgresql:42.2.20'
 
     testImplementation "org.spockframework:spock-core:$spockVersion"
     testImplementation "org.spockframework:spock-spring:$spockVersion"
