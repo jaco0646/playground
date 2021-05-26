@@ -9,7 +9,7 @@ import spock.lang.Specification
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE
 
 @SpringBootTest(webEnvironment = NONE)
-class ServiceTest extends Specification {
+class ServiceSpec extends Specification {
 
     @Autowired
     CacheManager cacheManager
