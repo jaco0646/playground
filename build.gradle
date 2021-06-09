@@ -45,6 +45,7 @@ gitProperties {
     customProperty 'git.commit.count', { it.repository.jgit.log().call().size() }  // https://github.com/n0mer/gradle-git-properties/blob/master/src/main/groovy/com/gorylenko/properties/CacheSupport.groovy#L30
     customProperty 'git.build.artifact', { project.tasks.findByName('bootJar').getBaseName() }
     customProperty 'git.build.java-version', { System.getProperty('java.version') }
+    customProperty 'git.build.spring-boot-version', { springBootVersion }
     customProperty 'git.build.time', { DateTimeFormatter.ofPattern(dateFormat).format(LocalDateTime.now()) }
 }
 
@@ -69,9 +70,8 @@ dependencies {
     implementation 'org.apache.commons:commons-collections4:4.4'
     implementation 'org.reflections:reflections:0.9.12'
 
-    implementation "org.springframework:spring-webmvc:$springVersion"
+    implementation "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
-    implementation "org.springframework.boot:spring-boot-starter-tomcat:$springBootVersion"
     implementation "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
     implementation "org.springframework.boot:spring-boot-devtools:$springBootVersion"
 

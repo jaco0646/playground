@@ -1,3 +1,4 @@
+# docker build -t postgres:no_pwd .
 # escape=`
 
 FROM postgres
