@@ -1,4 +1,4 @@
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 buildscript {
@@ -40,13 +40,13 @@ springBoot {
 
 // For actuator/info
 gitProperties {
-    dateFormat = 'yyyy-MM-dd h:mm a'
+    dateFormat = 'yyyy-MM-dd h:mm a z'
     keys = ['git.branch', 'git.build.version', 'git.commit.id', 'git.commit.time']
     customProperty 'git.commit.count', { it.repository.jgit.log().call().size() }  // https://github.com/n0mer/gradle-git-properties/blob/master/src/main/groovy/com/gorylenko/properties/CacheSupport.groovy#L30
-    customProperty 'git.build.artifact', { project.tasks.findByName('bootJar').getBaseName() }
+    customProperty 'git.build.artifact', { bootJar.archiveFileName.get() }
     customProperty 'git.build.java-version', { System.getProperty('java.version') }
     customProperty 'git.build.spring-boot-version', { springBootVersion }
-    customProperty 'git.build.time', { DateTimeFormatter.ofPattern(dateFormat).format(LocalDateTime.now()) }
+    customProperty 'git.build.time', { DateTimeFormatter.ofPattern(dateFormat).format(ZonedDateTime.now()) }
 }
 
 tasks.withType(JavaCompile) {
@@ -79,11 +79,11 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.20'
 
     runtimeOnly 'org.postgresql:postgresql:42.2.20'
+    runtimeOnly 'com.h2database:h2:1.4.200'
 
     testImplementation "org.spockframework:spock-core:$spockVersion"
     testImplementation "org.spockframework:spock-spring:$spockVersion"
     testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
-    testRuntimeOnly 'com.h2database:h2:1.4.200'
 }
 
 test {
