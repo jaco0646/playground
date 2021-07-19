@@ -3,6 +3,7 @@ package spring;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 import static java.util.Collections.emptyMap;
 import static java.util.function.Function.identity;
@@ -26,7 +27,7 @@ public class SystemPropertiesController {
     @GetMapping("/env")
     public Map<?,?> getParams(@RequestParam Map<String, String> params) {
         return params.isEmpty()
-                ? System.getProperties()
+                ? new TreeMap<>(System.getProperties())
                 : params.keySet().stream().collect(toMap(identity(), key -> System.getProperty(key, "")));
     }
 
