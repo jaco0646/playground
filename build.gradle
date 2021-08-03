@@ -85,6 +85,7 @@ dependencies {
     testImplementation "org.spockframework:spock-core:$spockVersion"
     testImplementation "org.spockframework:spock-spring:$spockVersion"
     testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+    testImplementation 'com.github.tomakehurst:wiremock-jre8:2.29.1'
 }
 
 test {
