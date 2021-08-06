@@ -1,3 +1,5 @@
+import org.springframework.boot.gradle.tasks.run.BootRun
+
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -55,8 +57,17 @@ tasks.withType(JavaCompile) {
 tasks.withType(Test) {
     jvmArgs += '--enable-preview'
 }
-bootRun {
+tasks.withType(BootRun) {
     jvmArgs = ['--enable-preview']
+}
+
+tasks.register('bootRunLocal', BootRun) {
+    it.group = 'Application'
+    it.description = /Equivalent to gradle bootRun --args='--spring.profiles.active=local'/
+    it.dependsOn = [bootJar]
+    it.mainClass.set(bootJar.mainClass)
+    it.classpath = sourceSets.main.runtimeClasspath
+    it.args = ['--spring.profiles.active=local']
 }
 
 repositories {
