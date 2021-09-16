@@ -9,10 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Future;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -32,7 +29,7 @@ public class ValidationController {
     static class V1 {
         @NotEmpty(message = "foo must not be empty")
         String foo;
-        @Positive(message = "int must be greater than zero")
+        @PositiveOrZero(message = "int cannot be null")  // defaults to zero if no value is passed
         int i;
         @NotNull
         @Future
@@ -40,16 +37,4 @@ public class ValidationController {
         @Valid
         List<V1> v1;
     }
-/*
-    {   "foo": "foo",
-        "i": 42,
-        "time": "2021-09-11",
-        "v1": [{
-            "foo": "bar",
-            "i": 43,
-            "time": "2021-09-12",
-            "v1": []
-        }]
-    }
-*/
 }
