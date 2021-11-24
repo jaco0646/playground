@@ -1,8 +1,8 @@
-package spring.jpa;
+package spring.jpa.foreign_keys;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TripleRepository extends CrudRepository<Triple, String> {
+interface OneToManyRepository extends CrudRepository<OneToManyEntity, Integer> {
 }
