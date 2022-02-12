@@ -4,12 +4,14 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
+import javax.validation.GroupSequence;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.List;
 
 @Value
+@GroupSequence({AssertTrue.class, ValidatableEntity.class})  // Alternatively, @Validated can be used wherever this class is a method param.
 @RequiredArgsConstructor(onConstructor_ = {@JsonCreator})
 class ValidatableEntity {
     @NotEmpty(message = "foo must not be empty")
@@ -25,6 +27,11 @@ class ValidatableEntity {
     @AssertTrue(message = "Length of foo must equal i.")
     private boolean isValid() {
         return foo.length() == i;
+    }
+
+    @AssertTrue(groups = AssertTrue.class, message = ">>> Custom Time Must Not Be Null Custom <<<")
+    private boolean isValid2() {
+        return time != null;
     }
 
     @Value

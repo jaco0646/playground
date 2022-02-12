@@ -2,6 +2,7 @@ package spring.jpa.foreign_keys;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.List;
@@ -20,5 +21,6 @@ class OneToManyEntity extends AuditedEntity {
     Integer id;
 
     @OneToMany(mappedBy = "parent", cascade = ALL, orphanRemoval = true)
+    @ToString.Exclude  // prevent infinite recursion due to cyclic dependency between parent and child
     List<ManyToOneEntity> children;
 }

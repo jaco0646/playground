@@ -44,4 +44,13 @@ class ValidationControllerSpec extends Specification {
             ).andExpect(status().isBadRequest())
             .andExpect(jsonPath('$', contains('Length of foo must equal i.')))
     }
+
+    def 'test AssertTrue group is validated first'() {
+        expect:
+            mockMvc.perform(post('/valid')
+                    .contentType(APPLICATION_JSON)
+                    .content(V1_REQUEST.replace('"2031-09-11"', 'null'))
+            ).andExpect(status().isBadRequest())
+            .andExpect(jsonPath('$', contains('>>> Custom Time Must Not Be Null Custom <<<')))
+    }
 }
