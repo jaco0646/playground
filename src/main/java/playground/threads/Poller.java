@@ -13,6 +13,10 @@ public class Poller {
     private final int timeout;
     private final TimeUnit timeUnit;
 
+    public <T> CompletableFuture<T> poll(Callable<T> job, Predicate<T> isComplete, T defaultResult) {
+        return poll(job, isComplete).exceptionally(e -> defaultResult);
+    }
+
     public <T> CompletableFuture<T> poll(Callable<T> job, Predicate<T> isComplete) {
         CompletableFuture<T> future = new CompletableFuture<>();
         Runnable runnable = runFomCallable(job, isComplete, future);

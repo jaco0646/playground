@@ -46,6 +46,17 @@ class PollerSpec extends Specification {
             results.size() == 29
     }
 
+    def 'test Exception default'() {
+        given:
+
+            def future = poller.poll(() -> throwException(), result2 -> result2 == 1, 'Default')
+        when:
+            def result = future.get()
+        then:
+            result == 'Default'
+            results.size() == 29
+    }
+
     int countUp() {
         int result = results.removeAt(0)
         println "working... $result"
@@ -58,7 +69,7 @@ class PollerSpec extends Specification {
         return result
     }
 
-    void throwException() {
+    String throwException() {
         int result = results.removeAt(0)
         println "working... $result"
         throw new Exception('foo')
