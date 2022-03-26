@@ -46,15 +46,14 @@ class PollerSpec extends Specification {
             results.size() == 29
     }
 
-    def 'test Exception default'() {
+    def 'test Timeout default'() {
         given:
-
-            def future = poller.poll(() -> throwException(), result2 -> result2 == 1, 'Default')
+            def future = poller.poll(() -> countDown(), result2 -> result2 == 5, () -> 42)
         when:
             def result = future.get()
         then:
-            result == 'Default'
-            results.size() == 29
+            result == 42
+            results.size() == 25
     }
 
     int countUp() {
