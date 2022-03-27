@@ -43,7 +43,11 @@ public class Poller {
         if (timeoutHandler == null) {
             future.completeExceptionally(new TimeoutException("Polling timed out after " + timeout + " " + timeUnit));
         } else {
-            future.complete(timeoutHandler.get());
+            try {
+                future.complete(timeoutHandler.get());
+            } catch (Exception e) {
+                future.completeExceptionally(e);
+            }
         }
     }
 }

@@ -2,6 +2,7 @@ package playground.threads
 
 import spock.lang.Specification
 
+import java.lang.reflect.UndeclaredThrowableException
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeoutException
@@ -53,6 +54,20 @@ class PollerSpec extends Specification {
             def result = future.get()
         then:
             result == 42
+            results.size() == 25
+    }
+
+    def 'test Timeout handler Exception'() {
+        given:
+            def future = poller.poll(() -> countDown(), result2 -> result2 == 5, () -> {throw new Exception('foo')})
+        when:
+            future.get()
+        then:
+            def e = thrown(ExecutionException)
+            e.cause instanceof UndeclaredThrowableException
+            e.cause.cause instanceof Exception
+            e.cause.cause.message == 'foo'
+            sleep(1000)
             results.size() == 25
     }
 
