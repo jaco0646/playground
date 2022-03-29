@@ -22,8 +22,8 @@ public class Poller {
         CompletableFuture<T> future = new CompletableFuture<>();
         Runnable runnable = runFomCallable(job, isComplete, future);
         ScheduledFuture<?> polling = ses.scheduleWithFixedDelay(runnable, initialDelay, interval, timeUnit);
-        ses.schedule(() -> timeout(future, timeoutHandler), timeout + initialDelay, timeUnit);
-        return future.whenComplete((result, e) -> polling.cancel(true));
+        ScheduledFuture<?> timeout = ses.schedule(() -> timeout(future, timeoutHandler), this.timeout + initialDelay, timeUnit);
+        return future.whenComplete((result, e) -> { polling.cancel(true); timeout.cancel(true); });
     }
 
     private <T> Runnable runFomCallable(Callable<T> job, Predicate<T> isComplete, CompletableFuture<T> future) {

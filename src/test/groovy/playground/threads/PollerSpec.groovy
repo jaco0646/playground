@@ -71,6 +71,27 @@ class PollerSpec extends Specification {
             results.size() == 25
     }
 
+    def 'test CompletionStage chaining'() {
+        given:
+            def future = poller.poll(() -> throwException(), t -> false)
+                .exceptionally(e -> 'recovered')
+        expect:
+            future.get() == 'recovered'
+            sleep(1000)
+            results.size() == 29
+    }
+
+    def 'test Timeout handler stops when Polling stops'() {
+        given:
+            def future = poller.poll(() -> countUp(), result2 -> result2 == 3, () -> {results.clear()})
+        when:
+            def result = future.get()
+        then:
+            result == 3
+            sleep(1000)
+            results.size() == 27
+    }
+
     int countUp() {
         int result = results.removeAt(0)
         println "working... $result"
