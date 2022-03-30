@@ -20,10 +20,14 @@ public class Poller {
 
     public <T> CompletableFuture<T> poll(Callable<T> job, Predicate<T> isComplete, Supplier<T> timeoutHandler) {
         CompletableFuture<T> future = new CompletableFuture<>();
-        Runnable runnable = runFomCallable(job, isComplete, future);
-        ScheduledFuture<?> polling = ses.scheduleWithFixedDelay(runnable, initialDelay, interval, timeUnit);
-        ScheduledFuture<?> timeout = ses.schedule(() -> timeout(future, timeoutHandler), this.timeout + initialDelay, timeUnit);
-        return future.whenComplete((result, e) -> { polling.cancel(true); timeout.cancel(true); });
+        Runnable runnableJob = runFomCallable(job, isComplete, future);
+        Runnable runnableTimeout = () -> timeout(future, timeoutHandler);
+        ScheduledFuture<?> polling = ses.scheduleWithFixedDelay(runnableJob, initialDelay, interval, timeUnit);
+        ScheduledFuture<?> timeout = ses.schedule(runnableTimeout, this.timeout + initialDelay, timeUnit);
+        return future.whenComplete((result, e) -> {
+            polling.cancel(true);
+            timeout.cancel(true);
+        });
     }
 
     private <T> Runnable runFomCallable(Callable<T> job, Predicate<T> isComplete, CompletableFuture<T> future) {
