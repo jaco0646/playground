@@ -14,7 +14,7 @@ buildscript {
 }
 
 plugins {
-    id 'idea'  // Automatically downloads source jars.
+    id 'idea'  // Automatically downloads source jars but not Javadoc.
     id 'groovy'
     id 'org.springframework.boot' version "$springBootVersion"
 //    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
@@ -22,6 +22,12 @@ plugins {
     id 'com.gorylenko.gradle-git-properties' version '2.3.1'
     id 'com.google.cloud.tools.jib' version '3.0.0'  // jibDockerBuild
     id 'net.bytebuddy.byte-buddy-gradle-plugin' version '1.11.15'
+}
+
+idea {
+    module {
+        downloadJavadoc = true
+    }
 }
 
 group 'com.playground'

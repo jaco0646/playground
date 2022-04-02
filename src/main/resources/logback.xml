@@ -9,7 +9,7 @@
     <logger name="io.netty" level="error"/>
     <logger name="org.asynchttpclient.netty" level="error"/>
 
-    <root level="debug">
+    <root level="info">
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>
