@@ -1,4 +1,4 @@
-package playground.threads;
+package threads;
 
 import java.util.List;
 import java.util.concurrent.*;

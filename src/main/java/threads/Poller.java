@@ -1,4 +1,4 @@
-package playground.threads;
+package threads;
 
 import lombok.RequiredArgsConstructor;
 

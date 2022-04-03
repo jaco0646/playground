@@ -1,4 +1,4 @@
-package playground.threads;
+package threads;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;

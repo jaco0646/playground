@@ -1,4 +1,4 @@
-package playground.chords
+package stackoverflow.questions.chords
 
 import spock.lang.Ignore
 import spock.lang.Specification
