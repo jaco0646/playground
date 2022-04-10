@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.concurrent.*;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 @RequiredArgsConstructor
 public class Poller {
@@ -15,10 +14,10 @@ public class Poller {
     private final TimeUnit timeUnit;
 
     public <T> CompletableFuture<T> poll(Callable<T> job, Predicate<T> isComplete) {
-        return poll(job, isComplete, null);
+        return poll(job, isComplete, this::defaultTimeoutHandler);
     }
 
-    public <T> CompletableFuture<T> poll(Callable<T> job, Predicate<T> isComplete, Supplier<T> timeoutHandler) {
+    public <T> CompletableFuture<T> poll(Callable<T> job, Predicate<T> isComplete, Callable<T> timeoutHandler) {
         CompletableFuture<T> future = new CompletableFuture<>();
         Runnable runnableJob = runFomCallable(job, isComplete, future);
         Runnable runnableTimeout = () -> timeout(future, timeoutHandler);
@@ -43,15 +42,15 @@ public class Poller {
         };
     }
 
-    private <T> void timeout(CompletableFuture<T> future, Supplier<T> timeoutHandler) {
-        if (timeoutHandler == null) {
-            future.completeExceptionally(new TimeoutException("Polling timed out after " + timeout + " " + timeUnit));
-        } else {
-            try {
-                future.complete(timeoutHandler.get());
-            } catch (Exception e) {
-                future.completeExceptionally(e);
-            }
+    private <T> void timeout(CompletableFuture<T> future, Callable<T> timeoutHandler) {
+        try {
+            future.complete(timeoutHandler.call());
+        } catch (Exception e) {
+            future.completeExceptionally(e);
         }
+    }
+
+    private <T> T defaultTimeoutHandler() throws TimeoutException {
+        throw new TimeoutException("Polling timed out after " + timeout + " " + timeUnit);
     }
 }

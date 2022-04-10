@@ -2,7 +2,6 @@ package threads
 
 import spock.lang.Specification
 
-import java.lang.reflect.UndeclaredThrowableException
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeoutException
@@ -64,9 +63,8 @@ class PollerSpec extends Specification {
             future.get()
         then:
             def e = thrown(ExecutionException)
-            e.cause instanceof UndeclaredThrowableException
-            e.cause.cause instanceof Exception
-            e.cause.cause.message == 'foo'
+            e.cause instanceof Exception
+            e.cause.message == 'foo'
             sleep(1000)
             results.size() == 25
     }
