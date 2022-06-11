@@ -21,7 +21,8 @@ public class AsyncController {
         if (webRequest.getHeader(AUTHORIZATION) == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authorization header required");
         }
-        return asyncService.getAuthTokenAsync().get();
+        asyncService.logAuthToken();
+        return "OK";
     }
 
 }

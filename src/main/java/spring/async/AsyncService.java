@@ -1,21 +1,26 @@
 package spring.async;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import spring.jpa.PlaygroundRepository;
 
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Service
+@RequiredArgsConstructor
 public class AsyncService {
+    private final PlaygroundRepository repo;
 
     @Async
-    public CompletableFuture<String> getAuthTokenAsync() throws InterruptedException {
-        return CompletableFuture.completedFuture(getAuthToken());
+    public void logAuthToken() {
+        System.out.println(">>> authToken before Repo call: " + getAuthToken());
+        repo.findAll();
+        System.out.println(">>> authToken after Repo call: " + getAuthToken());
     }
 
     private String getAuthToken() {
