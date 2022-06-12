@@ -10,6 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.concurrent.ExecutionException;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static spring.async.AuthTokenContextHolder.getAuthToken;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,7 +22,9 @@ public class AsyncController {
         if (webRequest.getHeader(AUTHORIZATION) == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authorization header required");
         }
+        System.out.println(">>> authToken before Service call: " + getAuthToken().orElse(null));
         asyncService.logAuthToken();
+        System.out.println(">>> authToken after Service call: " + getAuthToken().orElse(null));
         return "OK";
     }
 
