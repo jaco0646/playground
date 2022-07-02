@@ -1,9 +1,6 @@
 package spring.jpa;
 
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.NoSuchElementException;
@@ -21,12 +18,12 @@ public final class JpaController {
         playgroundRepo.saveAndFlush(kv);
     }
 
-    @RequestMapping("/jpa")
+    @GetMapping("/jpa")
     public Collection<KeyValue> findAll() {
         return playgroundRepo.findAll();
     }
 
-    @RequestMapping("/jpa/{key}")
+    @GetMapping("/jpa/{key}")
     public KeyValue find(@PathVariable String key) {
         return playgroundRepo.findById(key).orElseThrow(() -> new NoSuchElementException(key));
     }
