@@ -80,7 +80,7 @@ public class SwaggerConfig {
         Schema<?> schema = new Schema<>().type("string");
         if (!requestParam.defaultValue().equals(DEFAULT_NONE)) {
             schema.setDefault(requestParam.defaultValue());
-            schema.description("default: " + requestParam.defaultValue());
+            schema.description("Default value : " + requestParam.defaultValue());
         }
         return schema;
     }

@@ -52,12 +52,15 @@ public class HelloController {
         so they are not automatically documented as query params.
     <pre>{@code
         @RequestBody(content = @Content(
-                mediaType = APPLICATION_FORM_URLENCODED_VALUE,
-                schema = @Schema(type = "object", requiredProperties = {"p1", "p2"}),
-                schemaProperties = {
-                        @SchemaProperty(name = "p1", schema = @Schema(type = "string")),
-                        @SchemaProperty(name = "p2", schema = @Schema(type = "string"))
-                }
+            mediaType = APPLICATION_FORM_URLENCODED_VALUE,
+            schema = @Schema(type = "object", requiredProperties = {
+                    "required1", "requiredNameOverride", "requiredWithDefault"}),
+            schemaProperties = {
+                @SchemaProperty(name = "required1", schema = @Schema(type = "string")),
+                @SchemaProperty(name = "requiredNameOverride", schema = @Schema(type = "string")),
+                @SchemaProperty(name = "requiredWithDefault", schema = @Schema(type = "string", defaultValue = "default_value")),
+                @SchemaProperty(name = "optional", schema = @Schema(type = "string"))
+            }
         ))
     }</pre>
  */
