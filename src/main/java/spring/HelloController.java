@@ -1,13 +1,20 @@
 package spring;
 
 import org.springframework.boot.devtools.restart.Restarter;
+import org.springframework.http.ContentDisposition;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.time.LocalDate;
+import java.util.stream.Stream;
 
+import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
 
 @RestController
@@ -75,5 +82,15 @@ public class HelloController {
                 + "\n" + required2
                 + "\n" + requiredWithDefault
                 + "\n" + optional;
+    }
+
+    @GetMapping(path = "/csv")
+    public void csv(HttpServletResponse response) throws IOException {
+        String fileName = "csv_" + LocalDate.now() + ".csv";
+        response.setHeader(CONTENT_DISPOSITION, ContentDisposition.attachment().filename(fileName).build().toString());
+        response.setContentType("text/csv");
+        try (PrintWriter outputWriter = response.getWriter()) {
+            Stream.of("foo,bar", "baz,qux").forEach(outputWriter::println);
+        }
     }
 }
