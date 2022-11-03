@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 
+import java.io.OutputStream;
+
 public class Service {
 
     @Value("${message}")
@@ -29,6 +31,15 @@ public class Service {
     @Lookup
     public PrototypeBean getPrototype() {
         throw new UnsupportedOperationException();
+    }
+
+    public void printSlow(OutputStream out, String msg) {
+        try {
+            out.write(msg.getBytes());
+            Thread.sleep(1000);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

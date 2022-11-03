@@ -2,10 +2,12 @@ package spring;
 
 import org.springframework.boot.devtools.restart.Restarter;
 import org.springframework.http.ContentDisposition;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +18,7 @@ import java.util.stream.Stream;
 
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
+import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
 @RestController
 public class HelloController {
@@ -90,7 +93,22 @@ public class HelloController {
         response.setHeader(CONTENT_DISPOSITION, ContentDisposition.attachment().filename(fileName).build().toString());
         response.setContentType("text/csv");
         try (PrintWriter outputWriter = response.getWriter()) {
-            Stream.of("foo,bar", "baz,qux").forEach(outputWriter::println);
+            Stream.of("foo,bar", "baz,qux").forEach(msg -> {
+                outputWriter.println(msg);
+                outputWriter.flush();  // Flushing is necessary to "chunk" the response; else it will buffer in memory.
+            });
         }
+    }
+
+    /** StreamingResponseBody should result in {@code transfer-encoding: chunked} header in response;
+     *   but this also results in asynchronous processing, which may be unnecessary/overkill.
+     */
+    @GetMapping(path = "/stream")
+    public ResponseEntity<StreamingResponseBody> stream(HttpServletResponse response) {
+        response.setContentType(TEXT_PLAIN_VALUE);
+        response.setHeader("foo", "bar");
+        StreamingResponseBody stream = out -> Stream.of("Hello", "...", "World", "!")
+                .forEach(msg -> service.printSlow(out, msg));
+        return ResponseEntity.ok(stream);
     }
 }
