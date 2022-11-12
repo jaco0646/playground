@@ -1,28 +1,37 @@
 package streams;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-
-import static java.util.stream.Collectors.*;
+import java.util.function.Supplier;
 
 public class Utils {
 
-    static <T> void splitForEach(Collection<T> elements, Predicate<T> criteria, Consumer<T> onMatch, Consumer<T> onMismatch) {
-        elements.forEach(it -> {
-            if (criteria.test(it)) {
-                onMatch.accept(it);
-            } else {
-                onMismatch.accept(it);
-            }
-        });
+    static <T> Consumer<T> ifElse(Predicate<T> criteria, Consumer<T> onMatch, Consumer<T> onMismatch) {
+        return it -> (criteria.test(it) ? onMatch : onMismatch).accept(it);
     }
 
-    static <T, R> List<R> mapForEach(Collection<T> elements, Predicate<T> criteria, Function<T, R> onMatch, Function<T, R> onMismatch) {
-        return elements.stream()
-                .map(it -> criteria.test(it) ? onMatch.apply(it) : onMismatch.apply(it))
-                .collect(toList());
+    static <T, R> Function<T, R> ifElse(Predicate<T> criteria, Function<T, R> onMatch, Function<T, R> onMismatch) {
+        return it -> (criteria.test(it) ? onMatch : onMismatch).apply(it);
+    }
+
+    /**
+     * Thread-safe implementation of an enter-only-once gate.
+     * @see <a href="https://stackoverflow.com/questions/74404697/">What to call an object that acts like an enter-only-once gate?</a>
+     */
+    static class Once<T> implements Supplier<T> {
+        private final T second;
+        private final AtomicReference<T> gate;
+
+        Once(T first, T second) {
+            this.second = second;
+            this.gate = new AtomicReference<>(first);
+        }
+
+        @Override
+        public T get() {
+            return gate.getAndSet(second);
+        }
     }
 }
