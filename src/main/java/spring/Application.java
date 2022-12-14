@@ -8,11 +8,13 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.envers.repository.config.EnableEnversRepositories;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
 @EnableFeignClients
 @EnableJpaAuditing
+@EnableEnversRepositories
 public class Application {
     private static volatile ConfigurableApplicationContext context;
 
