@@ -109,6 +109,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-devtools:$springBootVersion"
     implementation "org.springframework.data:spring-data-envers:$springBootVersion"
     implementation "org.springframework.cloud:spring-cloud-starter-openfeign:$springCloudVersion"
+    runtimeOnly "io.awspring.cloud:spring-cloud-starter-aws-secrets-manager-config:2.4.4"
     // Swagger
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
     // Lombok
