@@ -4,58 +4,56 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import java.util.Objects;
-import java.util.Optional;
-
 public class CommentSearcher {
-    static final By COMMENT_WRAPPER = By.cssSelector(".fl-grow1.mt4");
-    static final By QUESTION_CLASS = By.className("question-hyperlink");
-    static final By ANSWER_CLASS = By.className("answer-hyperlink");
-    static final By COMMENT_CLASS = By.className("mt4");
-    static final By EMPTY = By.className("s-empty-state");
+    static final String NEEDLE = "beautiful".toLowerCase();
+    static final int TOTAL_PAGES = 88;
 
-    public static void main(String... args) {
+    static final By EMPTY_PAGE = By.cssSelector(".s-empty-state");
+    static final By QUESTION_LINK_OR_ANSWER_LINK_OR_COMMENT_TEXT =
+            By.cssSelector(".question-hyperlink, .answer-hyperlink, .mt4");
+
+    public static void main(String... args) throws InterruptedException {
         WebDriver driver = SeleniumWebDriver.newBraveDriver();
-        System.out.println("\n>>> Searching...");
-        long total = 0;
-        int index = 1;
-        while (index < 100) {
-            final int i = index;
-            String url = "https://stackoverflow.com/users/1371329/jaco0646?tab=activity&sort=comments&page=" + index;
+        System.out.println("\n>>> Searching... \"" + NEEDLE + "\"");
+        long matchCount = 0;
+        int pageIndex = 1;
+        while (pageIndex <= TOTAL_PAGES) {
+            String url = "https://stackoverflow.com/users/1371329/jaco0646?tab=activity&sort=comments&page=" + pageIndex;
             driver.get(url);
             if (isPageEmpty(driver)) break;
-            long count = driver.findElements(COMMENT_WRAPPER)
+            System.out.print(" page " + pageIndex);
+            long count = driver.findElements(QUESTION_LINK_OR_ANSWER_LINK_OR_COMMENT_TEXT)
                     .stream()
-                    .map(CommentSearcher::match)
-                    .filter(Objects::nonNull)
-                    .map(it -> i + ": " + it)
+                    .map(CommentSearcher::getTextWithoutSubElements)
                     .distinct()
-                    .peek(System.out::println)
+                    .filter(CommentSearcher::printResult)
                     .count();
-            total += count;
-            index++;
+            System.out.print(count > 0 ? '\n' : '\r');
+            matchCount += count;
+            pageIndex++;
+            Thread.sleep(500);
         }
         driver.quit();
-        System.out.println("<<< " + total + " Results");
+        System.out.println("<<< " + matchCount + " results");
+    }
+
+    static String getTextWithoutSubElements(WebElement we) {
+        String includingSubElements = we.getText();
+        return includingSubElements.split("\n")[0];
+    }
+
+    static boolean printResult(String haystack) {
+        if (haystack.toLowerCase().contains(NEEDLE)) {
+            System.out.println();
+            System.out.print("  * ");
+            System.out.print(haystack);
+            return true;
+        }
+        return false;
     }
 
     static boolean isPageEmpty(WebDriver driver) {
-        return driver.findElements(EMPTY).stream().findAny()
-                .map(WebElement::getText)
-                .filter("You have no comments"::equals)
-                .isPresent();
-    }
-
-    static String match(WebElement commentWrapper) {
-        Optional<WebElement> question = commentWrapper.findElements(QUESTION_CLASS).stream().findFirst();
-        Optional<WebElement> answer = commentWrapper.findElements(ANSWER_CLASS).stream().findFirst();
-        String comment = commentWrapper.findElement(COMMENT_CLASS).getText().toLowerCase();
-        return question
-                .map(WebElement::getText)
-                .map(String::toLowerCase)
-                .filter(q -> q.contains("interface"))
-                .map(q -> question.get().getText())
-                .orElse(null);
+        return driver.findElements(EMPTY_PAGE).stream().findAny().isPresent();
     }
 
 }
