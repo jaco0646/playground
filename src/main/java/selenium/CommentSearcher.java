@@ -5,55 +5,100 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class CommentSearcher {
-    static final String NEEDLE = "beautiful".toLowerCase();
-    static final int TOTAL_PAGES = 88;
+    public static void main(String... args) {
+        new CommentQuery("Beautiful", 10)
+                .searchComments();
+    }
 
-    static final By EMPTY_PAGE = By.cssSelector(".s-empty-state");
-    static final By QUESTION_LINK_OR_ANSWER_LINK_OR_COMMENT_TEXT =
-            By.cssSelector(".question-hyperlink, .answer-hyperlink, .mt4");
+    static class CommentQuery {
+        private static final By EMPTY_PAGE = By.cssSelector(".s-empty-state");
+        private static final By QUESTION_LINK_OR_ANSWER_LINK_OR_COMMENT_TEXT =
+                By.cssSelector(".question-hyperlink, .answer-hyperlink, .mt4");
 
-    public static void main(String... args) throws InterruptedException {
-        WebDriver driver = SeleniumWebDriver.newBraveDriver();
-        System.out.println("\n>>> Searching... \"" + NEEDLE + "\"");
-        long matchCount = 0;
-        int pageIndex = 1;
-        while (pageIndex <= TOTAL_PAGES) {
-            String url = "https://stackoverflow.com/users/1371329/jaco0646?tab=activity&sort=comments&page=" + pageIndex;
-            driver.get(url);
-            if (isPageEmpty(driver)) break;
-            System.out.print(" page " + pageIndex);
-            long count = driver.findElements(QUESTION_LINK_OR_ANSWER_LINK_OR_COMMENT_TEXT)
-                    .stream()
-                    .map(CommentSearcher::getTextWithoutSubElements)
-                    .distinct()
-                    .filter(CommentSearcher::printResult)
-                    .count();
-            System.out.print(count > 0 ? '\n' : '\r');
-            matchCount += count;
-            pageIndex++;
-            Thread.sleep(500);
+        private final WebDriver driver = SeleniumWebDriver.newBraveDriver();
+        private final Needle needle;
+        private final int pageLimit;
+
+        private long totalMatches = 0;
+        private int pageIndex = 1;
+
+        CommentQuery(String searchTerm, int pageLimit) {
+            this.needle = new Needle(searchTerm);
+            this.pageLimit = pageLimit;
         }
-        driver.quit();
-        System.out.println("<<< " + matchCount + " results");
+
+        void searchComments() {
+            System.out.println("\n>>> Searching... \"" + needle + "\"");
+            while (pageIndex <= pageLimit && hasNextPage()) {
+                searchPage();
+                sleep();
+            }
+            driver.quit();
+            System.out.println("<<< " + totalMatches + " results");
+        }
+
+        void searchPage() {
+            System.out.print(" page " + pageIndex);
+            long pageMatches = driver.findElements(QUESTION_LINK_OR_ANSWER_LINK_OR_COMMENT_TEXT)
+                    .stream()
+                    .map(Haystack::new)
+                    .distinct()
+                    .filter(needle::in)
+                    .peek(Haystack::print)
+                    .count();
+            System.out.print(pageMatches > 0 ? '\n' : '\r');
+            totalMatches += pageMatches;
+            pageIndex++;
+        }
+
+        boolean hasNextPage() {
+            driver.get("https://stackoverflow.com/users/1371329/jaco0646?tab=activity&sort=comments&page=" + pageIndex);
+            return driver.findElements(EMPTY_PAGE).stream().findAny().isEmpty();
+        }
+
+        static void sleep() {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
-    static String getTextWithoutSubElements(WebElement we) {
-        String includingSubElements = we.getText();
-        return includingSubElements.split("\n")[0];
+    static class Needle {
+        private final String searchTerm;
+        private final String needle;
+
+        Needle(String searchTerm) {
+            this.searchTerm = searchTerm;
+            this.needle = searchTerm.toLowerCase();
+        }
+
+        boolean in(Haystack haystack) {
+            return haystack.haystack.contains(needle);
+        }
+
+        @Override
+        public String toString() {
+            return searchTerm;
+        }
     }
 
-    static boolean printResult(String haystack) {
-        if (haystack.toLowerCase().contains(NEEDLE)) {
+    static class Haystack {
+        private final String comment;
+        private final String haystack;
+
+        Haystack(WebElement we) {
+            String includingSubElements = we.getText();
+            String excludingSubElements = includingSubElements.split("\n")[0];
+            this.comment = excludingSubElements;
+            this.haystack = excludingSubElements.toLowerCase();
+        }
+
+        void print() {
             System.out.println();
             System.out.print("  * ");
-            System.out.print(haystack);
-            return true;
+            System.out.print(comment);
         }
-        return false;
     }
-
-    static boolean isPageEmpty(WebDriver driver) {
-        return driver.findElements(EMPTY_PAGE).stream().findAny().isPresent();
-    }
-
 }
