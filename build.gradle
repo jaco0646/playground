@@ -33,8 +33,8 @@ idea {
 group 'com.playground'
 version '1.0-SNAPSHOT'
 
-sourceCompatibility = 16
-targetCompatibility = 16
+sourceCompatibility = 17
+targetCompatibility = 17
 
 byteBuddy {
     transformation {
@@ -47,7 +47,7 @@ jib {
     to.image = "$group/$version".toLowerCase()
     container.creationTime = 'USE_CURRENT_TIMESTAMP'
     container.mainClass = 'spring.Application'
-    container.jvmFlags = ['--enable-preview']
+//    container.jvmFlags = ['--enable-preview']
     container.ports = ['8080']
 }
 
@@ -66,15 +66,15 @@ gitProperties {
     customProperty 'git.build.time', { DateTimeFormatter.ofPattern(dateFormat).format(ZonedDateTime.now()) }
 }
 
-tasks.withType(JavaCompile) {
-    options.compilerArgs += '--enable-preview'
-}
-tasks.withType(Test) {
-    jvmArgs += '--enable-preview'
-}
-tasks.withType(BootRun) {
-    jvmArgs = ['--enable-preview']
-}
+//tasks.withType(JavaCompile) {
+//    options.compilerArgs += '--enable-preview'
+//}
+//tasks.withType(Test) {
+//    jvmArgs += '--enable-preview'
+//}
+//tasks.withType(BootRun) {
+//    jvmArgs = ['--enable-preview']
+//}
 
 tasks.register('bootRunLocal', BootRun) {
     it.group = 'Application'
@@ -91,7 +91,7 @@ repositories {
 
 dependencies {
     // Groovy
-    implementation 'org.codehaus.groovy:groovy-all:3.0.8'
+    implementation 'org.apache.groovy:groovy-all:4.0.13'
     // XML
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
