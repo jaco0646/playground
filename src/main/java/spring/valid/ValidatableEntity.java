@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
-import javax.validation.GroupSequence;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import jakarta.validation.GroupSequence;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.List;
 

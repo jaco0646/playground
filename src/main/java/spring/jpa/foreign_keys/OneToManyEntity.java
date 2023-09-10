@@ -3,12 +3,12 @@ package spring.jpa.foreign_keys;
 import lombok.*;
 import org.hibernate.Hibernate;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
-import static javax.persistence.CascadeType.ALL;
-import static javax.persistence.GenerationType.SEQUENCE;
+import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.GenerationType.SEQUENCE;
 
 @Getter
 @Setter

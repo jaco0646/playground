@@ -2,6 +2,7 @@ package spring.feign;
 
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,7 @@ import static java.util.Arrays.stream;
 import static java.util.Objects.requireNonNull;
 
 @Configuration
+@EnableFeignClients
 class FeignConfiguration implements EmbeddedValueResolverAware {
     private StringValueResolver stringValueResolver;
 

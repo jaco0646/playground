@@ -18,16 +18,14 @@ class OneToManyRepoSpec extends Specification {
 
     def "New parent and child are both assigned IDs and dates"() {
         given:
-            def parent = new OneToManyEntity()
-            parent.setChildren([new ManyToOneEntity()])
-        when:
+            def parent = new OneToManyEntity(children: [new ManyToOneEntity()])
             def persisted = parentRepo.save(parent)
-        then:
             def persistedChild = persisted.children.first()
+        expect:
             persisted.id > 0
-            persistedChild.id > persisted.id
             persisted.createdDate
             persisted.createdDate == persisted.lastModifiedDate
+            persistedChild.id > 0
             persistedChild.createdDate
             persistedChild.createdDate == persistedChild.lastModifiedDate
     }

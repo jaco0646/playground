@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import static lombok.AccessLevel.PACKAGE;
 

@@ -8,8 +8,8 @@ import net.bytebuddy.dynamic.ClassFileLocator
 import net.bytebuddy.dynamic.DynamicType
 import org.hibernate.annotations.Immutable
 
-import javax.persistence.Entity
-import javax.persistence.Table
+import jakarta.persistence.Entity
+import jakarta.persistence.Table
 
 class ImmutableEntityPlugin implements Plugin {
     private static final AnnotationDescription IMMUTABLE = AnnotationDescription.Builder.ofType(Immutable).build()

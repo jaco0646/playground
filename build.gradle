@@ -93,7 +93,7 @@ dependencies {
     // Groovy
     implementation 'org.apache.groovy:groovy-all:4.0.13'
     // XML
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.1'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     // Commons
     implementation 'org.apache.commons:commons-collections4:4.4'
@@ -101,7 +101,7 @@ dependencies {
     // Misc
     implementation 'org.seleniumhq.selenium:selenium-java:4.5.0'
     implementation 'org.seleniumhq.selenium:selenium-http-jdk-client:4.5.0'
-    implementation 'org.reflections:reflections:0.9.12'
+    implementation 'org.reflections:reflections:0.10.2'
     // Spring
     implementation "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
@@ -112,13 +112,13 @@ dependencies {
     implementation "org.springframework.cloud:spring-cloud-starter-openfeign:$springCloudVersion"
     runtimeOnly "io.awspring.cloud:spring-cloud-starter-aws-secrets-manager-config:2.4.4"
     // Swagger
-    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
     // Lombok
-    compileOnly 'org.projectlombok:lombok:1.18.20'
-    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    compileOnly 'org.projectlombok:lombok:1.18.26'
+    annotationProcessor 'org.projectlombok:lombok:1.18.26'
     // Database
     runtimeOnly 'org.postgresql:postgresql:42.2.20'
-    runtimeOnly 'com.h2database:h2:1.4.200'
+    runtimeOnly 'com.h2database:h2:2.2.222'
     // Test
     testImplementation "org.spockframework:spock-core:$spockVersion"
     testImplementation "org.spockframework:spock-spring:$spockVersion"
