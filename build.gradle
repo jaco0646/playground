@@ -33,8 +33,10 @@ idea {
 group 'com.playground'
 version '1.0-SNAPSHOT'
 
-sourceCompatibility = 17
-targetCompatibility = 17
+java {
+    sourceCompatibility = 17
+    targetCompatibility = 17
+}
 
 byteBuddy {
     transformation {
