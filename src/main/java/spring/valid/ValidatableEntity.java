@@ -10,8 +10,10 @@ import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.List;
 
+// @GroupSequence does _not_ recurse into @Valid fields.
+// Alternatively, @Validated can be used wherever this class is a method param.
+@GroupSequence({AssertTrue.class, ValidatableEntity.class})
 @Value
-@GroupSequence({AssertTrue.class, ValidatableEntity.class})  // Alternatively, @Validated can be used wherever this class is a method param.
 @RequiredArgsConstructor(onConstructor_ = {@JsonCreator})
 class ValidatableEntity {
     @NotEmpty(message = "foo must not be empty")
