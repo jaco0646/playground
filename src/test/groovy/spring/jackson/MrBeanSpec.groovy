@@ -21,7 +21,7 @@ class MrBeanSpec extends Specification {
         jsonMapper.registerModule(new MrBeanModule())
     }
 
-    def 'Can Mr Bean deserialize an interface'() {
+    def 'Mr Bean can deserialize an interface'() {
         given:
             String json = '''
                 {
@@ -37,5 +37,14 @@ class MrBeanSpec extends Specification {
             object.foo == 'one'
             object.bar == 'two'
             object.baz == 3
+            object.qux == 'null'
+    }
+
+    def 'Mr Bean can workaround a default method by re-abstracting it'() {
+        when:
+            def object = jsonMapper.readValue('{"qux": "override"}', MrBeanProjection2)
+        then:
+            object instanceof MrBeanProjection
+            object.qux == 'override'
     }
 }
