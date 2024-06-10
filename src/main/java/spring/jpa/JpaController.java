@@ -14,7 +14,8 @@ public final class JpaController {
     }
 
     @PutMapping("/jpa")
-    public void save(KeyValue kv) {
+    public void save(@RequestBody KeyValue kv) {
+        System.out.println(">>> /jpa ::" + kv);
         playgroundRepo.saveAndFlush(kv);
     }
 
