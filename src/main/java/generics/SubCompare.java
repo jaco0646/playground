@@ -1,12 +1,11 @@
 package generics;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Function;
 
 import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.*;
 
 public class SubCompare {
 
@@ -15,9 +14,9 @@ public class SubCompare {
         if (x.size() != y.size()) {
             return false;
         }
-        Set<Integer> setX = x.stream().map(it -> hash(it, comparables)).collect(toSet());
-        Set<Integer> setY = y.stream().map(it -> hash(it, comparables)).collect(toSet());
-        return setX.equals(setY);
+        List<Integer> sortedX = x.stream().map(it -> hash(it, comparables)).sorted().toList();
+        List<Integer> sortedY = y.stream().map(it -> hash(it, comparables)).sorted().toList();
+        return sortedX.equals(sortedY);
     }
 
     @SafeVarargs

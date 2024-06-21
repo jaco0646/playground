@@ -26,6 +26,7 @@ class SubCompareSpec extends Specification {
             !equals([a], [e], MyInterface::start, MyInterface::end)
             equals([a, b], [c, d], MyInterface::start, MyInterface::end)
             !equals([a, b], [d, e], MyInterface::end)
+            !equals([a, a, b], [a, b, b], MyInterface::start, MyInterface::end)
     }
 
     interface MyInterface {
