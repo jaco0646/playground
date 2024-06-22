@@ -19,7 +19,9 @@ class SubCompareSpec extends Specification {
             MyInterface d = new Impl2(null, yesterday, today, 1, List.of("d"))
             MyInterface e = new Impl2(null, tomorrow, today, 1, List.of("e"))
         expect:
-            equals([], [], MyInterface::start)
+            equals([], [])
+            equals([], [], Object::hashCode)
+            equals(['foo'], ['bar'])
             equals([a], [c], MyInterface::start, MyInterface::end, MyInterface::weight)
             !equals([a], [c], MyInterface::start, MyInterface::end, MyInterface::id)
             !equals([a], [b], MyInterface::start, MyInterface::end)

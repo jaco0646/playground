@@ -1,5 +1,7 @@
 package generics;
 
+import org.springframework.lang.NonNull;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -9,8 +11,13 @@ import static java.util.Arrays.stream;
 
 public class SubCompare {
 
+    /** Compare collections of related objects using the hash codes from any subset of the objects' method return values.
+     * The comparison requires values whose hash codes indicate both equality and inequality!
+     * <p>
+     * Note the contract of {@link Object#hashCode()} does <i>not</i> require an indication of inequality,
+     * so not all values are suitable for comparison using this method. */
     @SafeVarargs
-    public static <T> boolean equals(Collection<T> x, Collection<T> y, Function<T, ?>... comparables) {
+    public static <T> boolean equals(@NonNull Collection<T> x, @NonNull Collection<T> y, Function<T, ?>... comparables) {
         if (x.size() != y.size()) {
             return false;
         }
