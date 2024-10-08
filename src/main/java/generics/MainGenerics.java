@@ -3,6 +3,8 @@ package generics;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.stream.Collectors.*;
+
 public class MainGenerics {
     interface MyInterface { default void method(Object o) { throw new UnsupportedOperationException(); }}
     interface MyInterfaceOverload extends MyInterface { void method(String s); }
@@ -17,6 +19,11 @@ public class MainGenerics {
 
         MyInterface mio = (MyInterfaceOverload) System.out::println;
         mio.method("Hello World");
+
+        List<MyInterfaceOverload> subs = List.of();
+        List<MyInterfaceOverload> subs2 = subs.stream().toList();  // Compiles.
+        List<MyInterface> sups = subs.stream().collect(toList());  // Compiles.
+//      List<MyInterface> sups2 = subs.stream().toList();          // Doesn't compile.
     }
 
 

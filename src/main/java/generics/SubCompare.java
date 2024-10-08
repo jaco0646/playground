@@ -17,7 +17,8 @@ public class SubCompare {
      * Note the contract of {@link Object#hashCode()} does <i>not</i> require an indication of inequality,
      * so not all values are suitable for comparison using this method. */
     @SafeVarargs
-    public static <T> boolean equals(@NonNull Collection<T> x, @NonNull Collection<T> y, Function<T, ?>... comparables) {
+    public static <T> boolean equals(@NonNull Collection<? extends T> x,
+                                     @NonNull Collection<? extends T> y, Function<T, ?>... comparables) {
         if (x.size() != y.size()) {
             return false;
         }

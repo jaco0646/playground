@@ -116,8 +116,8 @@ dependencies {
     // Swagger
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
     // Lombok
-    compileOnly 'org.projectlombok:lombok:1.18.26'
-    annotationProcessor 'org.projectlombok:lombok:1.18.26'
+    compileOnly 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
     // Database
     runtimeOnly 'org.postgresql:postgresql:42.2.20'
     runtimeOnly 'com.h2database:h2:2.2.222'

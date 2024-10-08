@@ -12,6 +12,6 @@ dependencies {
     implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.11.15'
 
     //Used for Annotations
-    implementation 'org.projectlombok:lombok:1.18.20'
+    implementation 'org.projectlombok:lombok:1.18.34'
     implementation "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
 }
