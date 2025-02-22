@@ -6,11 +6,12 @@ import java.util.function.Consumer
 import java.util.function.Predicate
 import java.util.function.UnaryOperator
 
-import static streams.Utils.ifElse
+import static streams.Selector.branchingIf
+import static streams.Utils.*
 
 class UtilsSpec extends Specification {
     static final List<String> elements = ['foo', 'bar', 'baz', 'qux']
-    static final Predicate<String> startsWithBA = it -> it.startsWith('ba')
+    static final Predicate<String> startsWithBA = it -> it.toLowerCase().startsWith('ba')
 
     def "test ifElse Consumer"() {
         given:
@@ -33,5 +34,33 @@ class UtilsSpec extends Specification {
                     .toList()
         expect:
             modifiedElements == ['oof', 'BAR', 'BAZ', 'xuq']
+    }
+
+    def "test IF THEN ELSE consumer"() {
+        given:
+            def matches = []
+            def mismatches = []
+        when:
+            elements.forEach(branchingIf(startsWithBA).thenDo(matches::add).elseDo(mismatches::add))
+        then:
+            matches == ['bar', 'baz']
+            mismatches == ['foo', 'qux']
+    }
+
+    def "test IF THEN ELSE mapper"() {
+        expect:
+            ['foo', 'BAR', 'baz', 'QUX'].stream()
+                .map(branchingIf(startsWithBA).thenMap(String::toUpperCase).elseMap(String::toLowerCase))
+                .toList() == ['foo', 'BAR', 'BAZ', 'qux']
+    }
+
+    def "test EntrySet Collector"() {
+        expect:
+            [foo : ' bar  ', baz : '  qux ']
+                    .entrySet()
+                    .stream()
+                    .map(newKey(String::toUpperCase))
+                    .map(newValue(String::trim))
+                    .collect(toMap()) == [FOO: 'bar', BAZ: 'qux']
     }
 }

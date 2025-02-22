@@ -1,12 +1,38 @@
 package streams;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collector;
 
+/**
+ * related: <a href="https://stackoverflow.com/questions/43864005">Is it advisable to reuse a Collector?</a>
+ */
 public class Utils {
+
+    static <K, K2, V> Function<Map.Entry<K, V>, Map.Entry<K2, V>> newKey(Function<K, K2> keyMapper) {
+        return entry -> Map.entry(keyMapper.apply(entry.getKey()), entry.getValue());
+    }
+
+    static <K, V, V2> Function<Map.Entry<K, V>, Map.Entry<K, V2>> newValue(Function<V, V2> valueMapper) {
+        return entry -> Map.entry(entry.getKey(), valueMapper.apply(entry.getValue()));
+    }
+
+    static <K, V> Collector<Map.Entry<K, V>, ?, Map<K, V>> toMap() {
+        return toMap(HashMap::new);
+    }
+
+    static <K, V> Collector<Map.Entry<K, V>, ?, Map<K, V>> toMap(Supplier<Map<K, V>> mapConstructor) {
+        return Collector.of(
+                mapConstructor,
+                (map, entry) -> map.put(entry.getKey(), entry.getValue()),
+                (map1, map2) -> { map1.putAll(map2); return map1; }
+        );
+    }
 
     static <T> Consumer<T> ifElse(Predicate<T> criteria, Consumer<T> onMatch, Consumer<T> onMismatch) {
         return it -> (criteria.test(it) ? onMatch : onMismatch).accept(it);
