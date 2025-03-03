@@ -6,7 +6,7 @@ import java.util.function.Consumer
 import java.util.function.Predicate
 import java.util.function.UnaryOperator
 
-import static streams.Selector.branchingIf
+import static streams.Selector.if_
 import static streams.Utils.*
 
 class UtilsSpec extends Specification {
@@ -41,7 +41,7 @@ class UtilsSpec extends Specification {
             def matches = []
             def mismatches = []
         when:
-            elements.forEach(branchingIf(startsWithBA).thenDo(matches::add).elseDo(mismatches::add))
+            elements.forEach(if_(startsWithBA).thenDo(matches::add).elseDo(mismatches::add))
         then:
             matches == ['bar', 'baz']
             mismatches == ['foo', 'qux']
@@ -50,7 +50,7 @@ class UtilsSpec extends Specification {
     def "test IF THEN ELSE mapper"() {
         expect:
             ['foo', 'BAR', 'baz', 'QUX'].stream()
-                .map(branchingIf(startsWithBA).thenMap(String::toUpperCase).elseMap(String::toLowerCase))
+                .map(if_(startsWithBA).thenMap(String::toUpperCase).elseMap(String::toLowerCase))
                 .toList() == ['foo', 'BAR', 'BAZ', 'qux']
     }
 

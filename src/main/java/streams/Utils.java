@@ -8,6 +8,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
+import java.util.stream.Collector.Characteristics;
 
 /**
  * related: <a href="https://stackoverflow.com/questions/43864005">Is it advisable to reuse a Collector?</a>
@@ -23,14 +24,15 @@ public class Utils {
     }
 
     static <K, V> Collector<Map.Entry<K, V>, ?, Map<K, V>> toMap() {
-        return toMap(HashMap::new);
+        return toMap(HashMap::new, Characteristics.UNORDERED);
     }
 
-    static <K, V> Collector<Map.Entry<K, V>, ?, Map<K, V>> toMap(Supplier<Map<K, V>> mapConstructor) {
+    static <K, V> Collector<Map.Entry<K, V>, ?, Map<K, V>> toMap(Supplier<Map<K, V>> mapConstructor, Characteristics... c) {
         return Collector.of(
                 mapConstructor,
                 (map, entry) -> map.put(entry.getKey(), entry.getValue()),
-                (map1, map2) -> { map1.putAll(map2); return map1; }
+                (map1, map2) -> { map1.putAll(map2); return map1; },
+                c
         );
     }
 

@@ -8,49 +8,27 @@ import java.util.function.Predicate;
 
 /** A DSL for arbitrary branching logic within the {@link java.util.stream.Stream#map(Function)} method
  * and the {@link java.util.stream.Stream#forEach(Consumer)} method. */
-public class Selector {
-    private Selector() { }
+@RequiredArgsConstructor(staticName = "if_")
+public class Selector<T> {
+    private final Predicate<T> predicate;
 
-    public static <T> Then<T> branchingIf(Predicate<T> test) {
-        return new Then<>(test);
+    public ElseConsumer<T> thenDo(Consumer<T> onMatch) {
+        return (Consumer<T> onMismatch) ->
+                (T arg) -> (predicate.test(arg) ? onMatch : onMismatch).accept(arg);
     }
 
-    @RequiredArgsConstructor
-    public static class Then<T> {
-        private final Predicate<T> test;
-
-        public <R> ElseMapper<T, R> thenMap(Function<T, R> onMatch) {
-            return new ElseMapper<>(test, onMatch);
-        }
-
-        public ElseConsumer<T> thenDo(Consumer<T> onMatch) {
-            return new ElseConsumer<>(test, onMatch);
-        }
+    public <R> ElseMapper<T, R> thenMap(Function<T, R> onMatch) {
+        return (Function<T, R> onMismatch) ->
+                (T arg) -> (predicate.test(arg) ? onMatch : onMismatch).apply(arg);
     }
 
-    @RequiredArgsConstructor
-    public static class ElseMapper<T, R> {
-        private final Predicate<T> test;
-        private final Function<T, R> onMatch;
-
-        public Function<T, R> elseMap(Function<T, R> onMismatch) {
-            return arg -> test.test(arg) ? onMatch.apply(arg) : onMismatch.apply(arg);
-        }
+    @FunctionalInterface
+    public interface ElseConsumer<T> {
+        Consumer<T> elseDo(Consumer<T> onMismatch);
     }
 
-    @RequiredArgsConstructor
-    public static class ElseConsumer<T> {
-        private final Predicate<T> test;
-        private final Consumer<T> onMatch;
-
-        public Consumer<T> elseDo(Consumer<T> onMismatch) {
-            return arg -> {
-                if (test.test(arg)) {
-                    onMatch.accept(arg);
-                } else {
-                    onMismatch.accept(arg);
-                }
-            };
-        }
+    @FunctionalInterface
+    public interface ElseMapper<T, R> {
+        Function<T, R> elseMap(Function<T, R> onMismatch);
     }
 }
