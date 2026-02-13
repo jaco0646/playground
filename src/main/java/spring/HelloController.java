@@ -7,18 +7,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UncheckedIOException;
 import java.time.LocalDate;
 import java.util.stream.Stream;
 
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
-import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
-import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
+import static org.springframework.http.MediaType.*;
 
 @RestController
 public class HelloController {
@@ -110,5 +111,23 @@ public class HelloController {
         StreamingResponseBody stream = out -> Stream.of("Hello", "...", "World", "!")
                 .forEach(msg -> service.printSlow(out, msg));
         return ResponseEntity.ok(stream);
+    }
+
+    @PostMapping(path = "/upload", consumes = MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+        return ResponseEntity.ok(
+                "name: " + file.getName()
+                + "\n" + "original name: " + file.getOriginalFilename()
+                + "\n" + "content type: " + file.getContentType()
+                + "\n" + "content: " + getContent(file)
+        );
+    }
+
+    private static String getContent(MultipartFile file) {
+        try {
+            return new String(file.getBytes());
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 }

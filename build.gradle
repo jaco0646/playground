@@ -114,7 +114,7 @@ dependencies {
     implementation "org.springframework.cloud:spring-cloud-starter-openfeign:$springCloudVersion"
     runtimeOnly "io.awspring.cloud:spring-cloud-starter-aws-secrets-manager-config:2.4.4"
     // Swagger
-    implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
     // Lombok
     compileOnly 'org.projectlombok:lombok:1.18.34'
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
