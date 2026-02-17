@@ -9,7 +9,7 @@ repositories {
 }
 
 dependencies {
-    implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.11.15'
+    implementation 'net.bytebuddy:byte-buddy:1.18.5'
 
     //Used for Annotations
     implementation 'org.projectlombok:lombok:1.18.34'
