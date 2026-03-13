@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UncheckedIOException;
 import java.time.LocalDate;
@@ -114,7 +115,13 @@ public class HelloController {
     }
 
     @PostMapping(path = "/upload", consumes = MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
+        try (InputStream is = file.getInputStream()) {
+            System.out.println("Can open a file InputStream once.");
+        }
+        try (InputStream is = file.getInputStream()) {
+            System.out.println("Can open a file InputStream twice.");
+        }
         return ResponseEntity.ok(
                 "name: " + file.getName()
                 + "\n" + "original name: " + file.getOriginalFilename()
