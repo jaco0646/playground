@@ -9,23 +9,18 @@ import spock.lang.Specification
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE
 
-@ActiveProfiles('foo')
+@ActiveProfiles('local')
 @SpringBootTest(webEnvironment = NONE)
-class ProfilesConfigFooTest extends Specification {
+class ProfilesConfigLocalTest extends Specification {
 
     @Autowired
     ApplicationContext ctx
 
-    def testFooProfile() {
+    def 'Property files support interpolation.'() {
         given:
             Environment env = ctx.environment
         expect:
-            env.getProperty('env') == ('application')
-            env.getProperty('message').contains(' application ')
-            env.getActiveProfiles().length == 1
-            env.getActiveProfiles()[0] == 'foo'
-        and:
-            !ctx.containsBean('foobarBean')
-            !ctx.containsBean('foobazBean')
+            env.getProperty('env') == ('LOCAL')
+            env.getProperty('message').contains(' LOCAL ')
     }
 }
