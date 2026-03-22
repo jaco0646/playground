@@ -22,7 +22,7 @@ plugins {
     id 'project-report'  // htmlDependencyReport
     id 'com.gorylenko.gradle-git-properties' version '2.5.7'
     id 'com.google.cloud.tools.jib' version '3.5.3'  // jibDockerBuild
-    id 'net.bytebuddy.byte-buddy-gradle-plugin' version '1.18.5'
+    id 'net.bytebuddy.byte-buddy-gradle-plugin' version '1.18.7'
 }
 
 idea {
@@ -35,8 +35,9 @@ group = 'com.playground'
 version = '1.0-SNAPSHOT'
 
 java {
-    sourceCompatibility = 17
-    targetCompatibility = 17
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(25))
+    }
 }
 
 // https://docs.gradle.org/9.3.1/userguide/scala_plugin.html#sec:changing_scala_project_layout
@@ -47,6 +48,7 @@ tasks.named('compileScala') {
     // Scala only needs the declared dependencies
     // (and not the output of compileJava)
     classpath = sourceSets.main.compileClasspath
+    scalaCompileOptions.additionalParameters = ['-target:jvm-1.8']
 }
 tasks.named('compileJava') {
     // Java depends on the result of Scala compilation
@@ -111,44 +113,46 @@ dependencies {
     // Scala
     implementation("org.scala-lang:scala-library:2.12.21")
     // Groovy
-    implementation 'org.apache.groovy:groovy-all:4.0.13'
-    // XML
-    implementation 'com.fasterxml.jackson.module:jackson-module-mrbean:2.17.0'
-    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    implementation 'org.apache.groovy:groovy-all:4.0.30'
     // Commons
+    implementation 'tools.jackson.module:jackson-module-mrbean:3.1.0'
     implementation 'org.apache.commons:commons-collections4:4.4'
-    implementation 'commons-io:commons-io:2.11.0'
+    implementation 'commons-io:commons-io:2.21.0'
     // Misc
     implementation 'org.seleniumhq.selenium:selenium-java:4.5.0'
     implementation 'org.seleniumhq.selenium:selenium-http-jdk-client:4.5.0'
     implementation 'org.reflections:reflections:0.10.2'
     // Spring
-    implementation "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+    implementation "org.springframework.boot:spring-boot-starter-webmvc:$springBootVersion"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
     implementation "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
     implementation "org.springframework.boot:spring-boot-starter-validation:$springBootVersion"
     implementation "org.springframework.boot:spring-boot-devtools:$springBootVersion"
     implementation "org.springframework.data:spring-data-envers:$springBootVersion"
     implementation "org.springframework.cloud:spring-cloud-starter-openfeign:$springCloudVersion"
-    runtimeOnly "io.awspring.cloud:spring-cloud-starter-aws-secrets-manager-config:2.4.4"
+    runtimeOnly "io.awspring.cloud:spring-cloud-aws-starter-secrets-manager:4.0.0"
     // Swagger
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.2'
     // Lombok
-    compileOnly 'org.projectlombok:lombok:1.18.34'
-    annotationProcessor 'org.projectlombok:lombok:1.18.34'
+    compileOnly 'org.projectlombok:lombok:1.18.44'
+    annotationProcessor 'org.projectlombok:lombok:1.18.44'
     // Database
     runtimeOnly 'org.postgresql:postgresql:42.2.20'
     runtimeOnly 'com.h2database:h2:2.2.222'
     // Test
     testImplementation "org.spockframework:spock-core:$spockVersion"
     testImplementation "org.spockframework:spock-spring:$spockVersion"
-    testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
-    testImplementation 'com.github.tomakehurst:wiremock-jre8:2.29.1'
-    testImplementation 'io.github.http-builder-ng:http-builder-ng-core:1.0.4'
+    testImplementation "org.springframework.boot:spring-boot-starter-webmvc-test:$springBootVersion"
+    testImplementation "org.springframework.boot:spring-boot-starter-data-jpa-test:$springBootVersion"
+    testImplementation 'org.wiremock:wiremock:3.13.2'
 }
 
 test {
     useJUnitPlatform()
+    testLogging {
+        exceptionFormat = 'full'
+        showStandardStreams = true
+    }
     afterSuite { desc, result ->
         if (!desc.parent) {
             if (result.testCount == 0) {

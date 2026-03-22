@@ -1,9 +1,9 @@
 package spring.jackson
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import spock.lang.Specification
+import tools.jackson.databind.json.JsonMapper
 
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -14,11 +14,13 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(webEnvironment = NONE)
 class JacksonSpec extends Specification {
     @Autowired
-    ObjectMapper jsonMapper
+    JsonMapper jsonMapper
 
     def 'Test deserialization of capitalized json'() {
         setup:
-            jsonMapper.configOverride(LocalDateTime).setFormat(forPattern('yyyy-MM-dd HH:mm:ss'))
+            jsonMapper = jsonMapper.rebuild()
+                    .withConfigOverride(LocalDateTime, config -> config.setFormat(forPattern('yyyy-MM-dd HH:mm:ss')))
+                    .build()
             def json = / {"Foo":"foo","Bar":"2024-04-22","Baz":"2024-04-22 07:00:00"} /
             def pojo = new Pojo('foo', LocalDate.of(2024, 4, 22), LocalDateTime.of(2024, 4, 22, 7, 0, 0))
         expect:

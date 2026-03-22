@@ -14,17 +14,25 @@ import static lombok.AccessLevel.PACKAGE;
 @AllArgsConstructor(access = PACKAGE)
 public class Triple {
     /**
-     * An @Entity can only be embedded in another @Entity if they share an @Id.
-     * Generally, the embedded class would not be another @Entity. It would be
-     * annotated with @Embeddable instead.
+     * In SpringBoot 3, an @Entity could be embedded in another @Entity if they share an @Id.
+     * In SpringBoot 4, it seems the target must be annotated with @Embeddable instead.
      */
-    @Id
-    @Column(name = "k")
-    String key;
+//    @Id
+//    @Column(name = "k")
+//    String key;
 
-    @Embedded
+    @EmbeddedId
     KeyValue kv;
 
     @Column
     String third;
+
+    @Embeddable
+    @Value
+    @NoArgsConstructor(access = PACKAGE, force = true)
+    @AllArgsConstructor(access = PACKAGE)
+    public static class KeyValue {
+        String key;
+        String value;
+    }
 }

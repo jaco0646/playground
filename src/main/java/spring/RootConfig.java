@@ -1,14 +1,13 @@
 package spring;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.reflections.Reflections;
-import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
-import spring.cache.CacheConfig;
 import spring.animal.domain.Animal;
+import spring.cache.CacheConfig;
 
 @PropertySource({
     // Default properties cannot be overridden by @PropertySource files.
@@ -32,10 +31,8 @@ public class RootConfig {
     }
 
     @Bean
-    public CommandLineRunner registerAnimals(ObjectMapper mapper) {
-        return args -> {
-            Reflections reflection = new Reflections(Animal.class.getPackageName());
-            reflection.getSubTypesOf(Animal.class).forEach(mapper::registerSubtypes);
-        };
+    public JsonMapperBuilderCustomizer registerAnimals() {
+        Reflections reflection = new Reflections(Animal.class.getPackageName());
+        return builder -> reflection.getSubTypesOf(Animal.class).forEach(builder::registerSubtypes);
     }
 }

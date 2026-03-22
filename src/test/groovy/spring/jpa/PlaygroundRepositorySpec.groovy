@@ -1,7 +1,7 @@
 package spring.jpa
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties
+import org.springframework.boot.jdbc.autoconfigure.DataSourceProperties
 import org.springframework.boot.test.context.SpringBootTest
 import spock.lang.Specification
 

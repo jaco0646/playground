@@ -15,7 +15,7 @@ class ReflectUtilSpec extends Specification {
             output == expected
         where:
             input         | expected
-            LinkedHashMap | [AbstractMap, Cloneable, HashMap, Map, Object, Serializable]
-            ArrayList     | [AbstractCollection, AbstractList, Cloneable, Collection, Iterable, List, Object, RandomAccess, Serializable]
+            LinkedHashMap | [AbstractMap, Cloneable, HashMap, Map, Object, SequencedMap, Serializable]
+            ArrayList     | [AbstractCollection, AbstractList, Cloneable, Collection, Iterable, List, Object, RandomAccess, SequencedCollection, Serializable]
     }
 }

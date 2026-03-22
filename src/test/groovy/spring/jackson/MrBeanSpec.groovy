@@ -1,12 +1,12 @@
 package spring.jackson
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.mrbean.MrBeanModule
 import org.spockframework.spring.EnableSharedInjection
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import spock.lang.Shared
 import spock.lang.Specification
+import tools.jackson.databind.json.JsonMapper
+import tools.jackson.module.mrbean.MrBeanModule
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE
 
@@ -15,10 +15,10 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 class MrBeanSpec extends Specification {
     @Shared
     @Autowired
-    ObjectMapper jsonMapper
+    JsonMapper jsonMapper
 
     void setupSpec() {
-        jsonMapper.registerModule(new MrBeanModule())
+        jsonMapper = jsonMapper.rebuild().addModule(new MrBeanModule()).build()
     }
 
     def 'Mr Bean can deserialize an interface'() {
