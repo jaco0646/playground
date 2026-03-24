@@ -1,0 +1,10 @@
+# Spring will split a comma-separated string into a list,
+#  but it will not parse a yml list directly.
+my:
+  list: >
+    ${one},
+    ${two},
+    ${three}
+one: foo
+two: bar
+three: baz
