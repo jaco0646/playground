@@ -18,7 +18,8 @@ class YmlListTest extends Specification {
 
     def 'Read List from YML config'() {
         expect:
-            configList == ['foo', 'bar', 'baz']
+            configList.subList(0, 3) == ['foo', 'bar', 'baz']
+            configList.get(3).startsWith(/C:\Program Files\Java\jdk/)
     }
 
 }
