@@ -26,6 +26,13 @@ idea {
     }
 }
 
+// https://docs.gradle.org/current/userguide/groovy_plugin.html#sec:incremental_groovy_compilation
+tasks.withType(GroovyCompile).configureEach {
+    options.incremental = true
+    options.incrementalAfterFailure = true
+    options.annotationProcessorPath = null
+}
+
 ext {
     git = Grgit.open(dir: rootProject.projectDir)
     gitLongHash = git.head().id
