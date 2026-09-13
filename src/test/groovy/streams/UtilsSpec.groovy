@@ -61,6 +61,6 @@ class UtilsSpec extends Specification {
                     .stream()
                     .map(newKey(String::toUpperCase))
                     .map(newValue(String::trim))
-                    .collect(toMap()) == [FOO: 'bar', BAZ: 'qux']
+                    .collect(entriesToMap()) == [FOO: 'bar', BAZ: 'qux']
     }
 }

@@ -25,14 +25,17 @@ public class Triple {
     KeyValue kv;
 
     @Column
-    String third;
+    String tripleThird;
 
-    @Embeddable
-    @Value
-    @NoArgsConstructor(access = PACKAGE, force = true)
-    @AllArgsConstructor(access = PACKAGE)
-    public static class KeyValue {
-        String key;
-        String value;
-    }
+    // The word "value" is reserved in H2, hence the prefixes.
+    public record KeyValue(String tripleKey, String tripleValue) {}
+
+//    @Embeddable
+//    @Value
+//    @NoArgsConstructor(access = PACKAGE, force = true)
+//    @AllArgsConstructor(access = PACKAGE)
+//    public static class KeyValue {
+//        String key;
+//        String value;
+//    }
 }

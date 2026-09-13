@@ -1,12 +1,11 @@
 package streams;
 
+import org.springframework.dao.DuplicateKeyException;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.util.function.*;
 import java.util.stream.Collector;
 import java.util.stream.Collector.Characteristics;
 
@@ -23,14 +22,30 @@ public class Utils {
         return entry -> Map.entry(entry.getKey(), valueMapper.apply(entry.getValue()));
     }
 
-    static <K, V> Collector<Map.Entry<K, V>, ?, Map<K, V>> toMap() {
-        return toMap(HashMap::new, Characteristics.UNORDERED);
+    static <K, V> Collector<Map.Entry<K, V>, ?, Map<K, V>> entriesToMap() {
+        return entriesToMap(HashMap::new, Characteristics.UNORDERED);
     }
 
-    static <K, V> Collector<Map.Entry<K, V>, ?, Map<K, V>> toMap(Supplier<Map<K, V>> mapConstructor, Characteristics... c) {
+    static <K, V> Collector<Map.Entry<K, V>, ?, Map<K, V>> entriesToMap(Supplier<Map<K, V>> mapConstructor,
+                                                                        Characteristics... c) {
         return Collector.of(
                 mapConstructor,
-                (map, entry) -> map.put(entry.getKey(), entry.getValue()),
+                (map, entry) -> map.merge(entry.getKey(), entry.getValue(), (_,_) -> dke(entry)),
+                (map1, map2) -> { map1.putAll(map2); return map1; },
+                c
+        );
+    }
+
+    private static <V> V dke(Map.Entry<?,?> entry) {
+        throw new DuplicateKeyException(String.valueOf(entry.getKey()));
+    }
+
+    static <K, V> Collector<Map.Entry<K, V>, ?, Map<K, V>> entriesToMap(Supplier<Map<K, V>> mapConstructor,
+                                                                        BinaryOperator<V> mergeFunction,
+                                                                        Characteristics... c) {
+        return Collector.of(
+                mapConstructor,
+                (map, entry) -> map.merge(entry.getKey(), entry.getValue(), mergeFunction),
                 (map1, map2) -> { map1.putAll(map2); return map1; },
                 c
         );
