@@ -38,7 +38,7 @@ public class StaticResponseServer implements AutoCloseable {
         this.path = path == null ? "/" : path.startsWith("/") ? path : "/" + path;
         this.url = URI.create(this.host + ":" + this.port + this.path);
         this.status = requireNonNull(status, "Invalid status: null");
-        this.msg = jsonMsg(status);
+        this.msg = msg == null ? jsonMsg(status) : msg;
         this.server = serve();
     }
 
@@ -93,9 +93,6 @@ public class StaticResponseServer implements AutoCloseable {
     }
 
     private String jsonMsg(HttpStatus status) {
-        if (msg != null) {
-            return msg;
-        }
         return "{" +
                 '"' +
                 "code" +

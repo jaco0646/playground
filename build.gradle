@@ -149,6 +149,7 @@ dependencies {
     // Database
     runtimeOnly 'org.postgresql:postgresql:42.7.13'
     runtimeOnly 'com.h2database:h2:2.5.250'
+    developmentOnly "org.springframework.boot:spring-boot-h2console:$springBootVersion"
     // Test
     testImplementation "org.spockframework:spock-core:$spockVersion"
     testImplementation "org.spockframework:spock-spring:$spockVersion"
