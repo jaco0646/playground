@@ -1,12 +1,13 @@
 package spring;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Encoding;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import org.springframework.boot.devtools.restart.Restarter;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
@@ -17,6 +18,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UncheckedIOException;
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
@@ -114,8 +116,14 @@ public class HelloController {
         return ResponseEntity.ok(stream);
     }
 
+    @Operation(description = "This endpoint accepts both a multipart file and a json payload.",
+            requestBody = @RequestBody(content = @Content(encoding = @Encoding(
+                    name = "json", contentType = APPLICATION_JSON_VALUE))))
     @PostMapping(path = "/upload", consumes = MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<String> uploadFile(
+            @RequestPart("file") MultipartFile file,
+            @RequestPart("json") Map<String, String> json
+    ) throws IOException {
         try (InputStream is = file.getInputStream()) {
             System.out.println("Can open a file InputStream once.");
         }
@@ -127,6 +135,7 @@ public class HelloController {
                 + "\n" + "original name: " + file.getOriginalFilename()
                 + "\n" + "content type: " + file.getContentType()
                 + "\n" + "content: " + getContent(file)
+                + "\n" + "json: " + json
         );
     }
 
